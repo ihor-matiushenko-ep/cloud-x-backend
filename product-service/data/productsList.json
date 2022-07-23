@@ -1,0 +1,18 @@
+[
+	{
+		"count": 1,
+		"description": "Mario, Luigi, Yoschi figures",
+		"id": "1",
+		"price": 300,
+		"title": "Mario, Luigi, Yoschi figures",
+		"img": "https://images.pexels.com/photos/163036/mario-luigi-yoschi-figures-163036.jpeg"
+	},
+	{
+		"count": 2,
+		"description": "Funny Dinos figures",
+		"id": "2",
+		"price": 200,
+		"title": "Funny Dinos figures",
+		"img": "https://images.pexels.com/photos/3663060/pexels-photo-3663060.jpeg"
+	}
+]
