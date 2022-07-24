@@ -15,6 +15,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! source-map-support/register */ "source-map-support/register");
 /* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(source_map_support_register__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _getProductsList__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./getProductsList */ "./api/getProductsList.js");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants */ "./constants.js");
+
 
 
 
@@ -26,10 +28,20 @@ const getProductById = async ({
   try {
     const productsList = await (0,_getProductsList__WEBPACK_IMPORTED_MODULE_1__.getProductsList)();
     const product = JSON.parse(productsList).find(product => product.id === productId);
+
+    if (!product) {
+      throw Error;
+    }
+
     return product;
   } catch (error) {
-    console.error(error);
-    return error;
+    console.error(`${_constants__WEBPACK_IMPORTED_MODULE_2__.ERROR_PRODUCT_NOT_FOUND}: `, error);
+    return {
+      error: {
+        type: error.toString(),
+        message: _constants__WEBPACK_IMPORTED_MODULE_2__.ERROR_PRODUCT_NOT_FOUND
+      }
+    };
   }
 };
 
@@ -48,6 +60,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! source-map-support/register */ "source-map-support/register");
 /* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(source_map_support_register__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _data_productsList_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../data/productsList.json */ "./data/productsList.json");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants */ "./constants.js");
+
 
 
 
@@ -58,10 +72,35 @@ const getProductsList = async () => {
     //TODO: replace with real API call
     return JSON.stringify(_data_productsList_json__WEBPACK_IMPORTED_MODULE_1__);
   } catch (error) {
-    console.error(error);
-    return error;
+    console.error(`${_constants__WEBPACK_IMPORTED_MODULE_2__.ERROR_PRODUCTS_LIST_FETCH_FAILED}: `, error);
+    return {
+      error: {
+        type: error.toString(),
+        message: _constants__WEBPACK_IMPORTED_MODULE_2__.ERROR_PRODUCTS_LIST_FETCH_FAILED
+      }
+    };
   }
 };
+
+/***/ }),
+
+/***/ "./constants.js":
+/*!**********************!*\
+  !*** ./constants.js ***!
+  \**********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ERROR_PRODUCTS_LIST_FETCH_FAILED": () => (/* binding */ ERROR_PRODUCTS_LIST_FETCH_FAILED),
+/* harmony export */   "ERROR_PRODUCT_NOT_FOUND": () => (/* binding */ ERROR_PRODUCT_NOT_FOUND)
+/* harmony export */ });
+/* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! source-map-support/register */ "source-map-support/register");
+/* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(source_map_support_register__WEBPACK_IMPORTED_MODULE_0__);
+
+// Errors messages
+const ERROR_PRODUCTS_LIST_FETCH_FAILED = 'Failed to fetch the products list';
+const ERROR_PRODUCT_NOT_FOUND = 'Product not found';
 
 /***/ }),
 
@@ -78,6 +117,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! source-map-support/register */ "source-map-support/register");
 /* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(source_map_support_register__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _api_getProductById__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../api/getProductById */ "./api/getProductById.js");
+/* harmony import */ var _utils_handleError__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/handleError */ "./utils/handleError.js");
+
 
 
 
@@ -90,12 +131,13 @@ const getProductByIdHandler = async (event, context, callback) => {
   const product = await (0,_api_getProductById__WEBPACK_IMPORTED_MODULE_1__.getProductById)({
     productId
   });
+  (0,_utils_handleError__WEBPACK_IMPORTED_MODULE_2__.handleError)(product, callback);
   const response = {
     statusCode: 200,
     headers: {
       'Access-Control-Allow-Origin': '*'
     },
-    body: JSON.stringify(product)
+    body: product
   };
   callback(null, response);
 };
@@ -115,21 +157,50 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! source-map-support/register */ "source-map-support/register");
 /* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(source_map_support_register__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _api_getProductsList__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../api/getProductsList */ "./api/getProductsList.js");
+/* harmony import */ var _utils_handleError__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/handleError */ "./utils/handleError.js");
+
 
 
 
 
 
 const getProductsListHandler = async (event, context, callback) => {
-  const productsList = await (0,_api_getProductsList__WEBPACK_IMPORTED_MODULE_1__.getProductsList)();
+  const products = await (0,_api_getProductsList__WEBPACK_IMPORTED_MODULE_1__.getProductsList)();
+  (0,_utils_handleError__WEBPACK_IMPORTED_MODULE_2__.handleError)(products, callback);
   const response = {
     statusCode: 200,
     headers: {
       'Access-Control-Allow-Origin': '*'
     },
-    body: JSON.stringify(productsList)
+    body: JSON.stringify(products)
   };
   callback(null, response);
+};
+
+/***/ }),
+
+/***/ "./utils/handleError.js":
+/*!******************************!*\
+  !*** ./utils/handleError.js ***!
+  \******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "handleError": () => (/* binding */ handleError)
+/* harmony export */ });
+/* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! source-map-support/register */ "source-map-support/register");
+/* harmony import */ var source_map_support_register__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(source_map_support_register__WEBPACK_IMPORTED_MODULE_0__);
+
+const handleError = (result, callback) => {
+  if (result !== null && result !== void 0 && result.error) {
+    const {
+      type,
+      message
+    } = result['error'];
+    const errorMessage = `${message}. ${type}`;
+    return callback(errorMessage);
+  }
 };
 
 /***/ }),
