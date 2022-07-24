@@ -1,7 +1,11 @@
-export const handleError = (result, callback) => {
+export const handleError = (result, callback, statusCode = 404) => {
   if (result?.error) {
-    const { type, message } = result['error'];
-    const errorMessage = `${message}. ${type}`;
-    return callback(errorMessage);
+    const { error } = result;
+
+    return callback(null, {
+      statusCode,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(error),
+    });
   }
 };

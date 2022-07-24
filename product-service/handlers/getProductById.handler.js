@@ -16,7 +16,7 @@ export const getProductByIdHandler = async (event, context, callback) => {
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
-    body: product,
+    body: JSON.stringify(product),
   };
 
   callback(null, response);
