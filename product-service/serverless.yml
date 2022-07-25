@@ -1,0 +1,36 @@
+service: product-service
+
+frameworkVersion: '3'
+
+plugins:
+  - serverless-webpack
+  - serverless-openapi-documentation
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: eu-west-1
+
+functions:
+  getProductsList:
+    handler: handler.getProductsList
+    events:
+      - http:
+          path: /products
+          method: get
+          cors:
+            origin: '*'
+  getProductById:
+    handler: handler.getProductById
+    events:
+      - http:
+          path: /products/{productId}
+          method: get
+          cors:
+            origin: '*'
