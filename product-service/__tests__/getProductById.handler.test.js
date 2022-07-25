@@ -25,7 +25,7 @@ describe('getProductById handler', () => {
       headers: {
         'Access-Control-Allow-Origin': '*',
       },
-      body: result,
+      body: JSON.stringify(result),
     };
     const testEvent = {
       pathParameters: {
